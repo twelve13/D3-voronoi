@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Voronoi Coloring</title>
+	<script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+<body>
+	<script>
+		var width=window.innerWidth;
+		var height=window.innerHeight;
+		
+		//create array of 100 numbers and use them to create random x and y values
+		var vertices = d3.range(100).map(function(d){return [Math.random()*width, Math.random()*height]; });
+		var voronoi = d3.voronoi().size([width, height]);
+		var svg = d3.select("body").append("svg").attr("width", width).attr("height", height).attr("fill", "white");
+
+		var colors = ["#1eb8de", "#e6e6e6", "#47c4b6", "#70d18e", "#a8e6cf", "#ff8b94", "#ade550", "#bdbdb"];
+
+		var getRandomColor = function() {
+			return Math.floor(Math.random() * Math.floor(8));
+		}
+
+		svg.append("g").attr("class", "fuel")
+		.selectAll("circle")
+		.data(vertices)
+		.enter().append("circle")
+		.attr("cx", function(d){return d[0];})
+		.attr("cy", function(d){return d[1];})
+		.attr("r", "2.5");
+
+		svg.append("g").attr("class", "polygons")
+		.selectAll("path")
+		.data(voronoi.polygons(vertices))
+		.enter().append("path")
+		.attr("d", function(d){return "M"+d.join("L")+"Z";})
+		.attr("stroke", "black")
+		.on("mouseenter", function(){this.style.fill = colors[getRandomColor()];});
+	</script>
+</body>
+</html>
